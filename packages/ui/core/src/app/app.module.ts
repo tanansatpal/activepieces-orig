@@ -20,11 +20,8 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { CommonLayoutModule } from './modules/common/common-layout.module';
-import { FirebaseAuthLayoutModule } from '../../../../ee/firebase-auth/frontend/firebase-auth.module';
-import { Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { FlagService } from '@activepieces/ui/common';
-import { ApEdition } from '@activepieces/shared';
-import { FirebaseAuthContainerComponent } from '@ee/firebase-auth/frontend/auth-container/firebase-auth-container.component';
 import { UserLoggedIn } from './guards/user-logged-in.guard';
 import { DashboardContainerComponent } from '@activepieces/ui/feature-dashboard';
 import { FeatureCommandBarModule } from '@activepieces/ui/feature-command-bar';
@@ -65,7 +62,6 @@ export function tokenGetter() {
         allowedDomains: [extractHostname(environment.apiUrl)],
       },
     }),
-    ...dynamicModules(),
     AngularSvgIconModule,
     CommonLayoutModule,
     UiCommonModule,
@@ -92,99 +88,64 @@ export function initializeAppCustomLogic(
     new Promise((resolve) => {
       flagService.getEdition().subscribe((edition) => {
         console.log('AP Edition ' + edition);
-        router.resetConfig([...dynamicRoutes(edition)]);
+        router.resetConfig([
+          {
+            path: '',
+            component: DashboardContainerComponent,
+            canActivate: [UserLoggedIn],
+            children: [
+              {
+                path: '',
+                loadChildren: () =>
+                  import('@activepieces/ui/feature-dashboard').then(
+                    (m) => m.UiFeatureDashboardModule
+                  ),
+              },
+            ],
+          },
+          {
+            path: '',
+            children: [
+              {
+                path: '',
+                loadChildren: () =>
+                  import('./modules/flow-builder/flow-builder.module').then(
+                    (m) => m.FlowBuilderModule
+                  ),
+              },
+            ],
+          },
+          {
+            path: '',
+            component: AuthLayoutComponent,
+            children: [
+              {
+                path: '',
+                loadChildren: () =>
+                  import('@activepieces/ui/feature-authentication').then(
+                    (m) => m.UiFeatureAuthenticationModule
+                  ),
+              },
+            ],
+          },
+          {
+            canActivate: [UserLoggedIn],
+            path: 'templates/:templateId',
+            component: ImportFlowComponent,
+          },
+          {
+            path: 'redirect',
+            component: RedirectUrlComponent,
+          },
+          {
+            path: '**',
+            component: NotFoundComponent,
+            title: 'AP-404',
+          },
+        ]);
         resolve();
       });
     });
-}
-
-function dynamicRoutes(edition: string) {
-  const coreRoutes: Route[] = [
-    {
-      path: '',
-      component: DashboardContainerComponent,
-      canActivate: [UserLoggedIn],
-      children: [
-        {
-          path: '',
-          loadChildren: () =>
-            import('@activepieces/ui/feature-dashboard').then(
-              (m) => m.UiFeatureDashboardModule
-            ),
-        },
-      ],
-    },
-    {
-      path: '',
-      children: [
-        {
-          path: '',
-          loadChildren: () =>
-            import('./modules/flow-builder/flow-builder.module').then(
-              (m) => m.FlowBuilderModule
-            ),
-        },
-      ],
-    },
-  ];
-  const suffixRoutes: Route[] = [
-    {
-      canActivate: [UserLoggedIn],
-      path: 'templates/:templateId',
-      component: ImportFlowComponent,
-    },
-    {
-      path: 'redirect',
-      component: RedirectUrlComponent,
-    },
-    {
-      path: '**',
-      component: NotFoundComponent,
-      title: 'AP-404',
-    },
-  ];
-  let editionRoutes: Route[] = [];
-  switch (edition) {
-    case ApEdition.ENTERPRISE:
-      editionRoutes = [
-        {
-          path: '',
-          component: FirebaseAuthContainerComponent,
-          children: [
-            {
-              path: '',
-              loadChildren: () =>
-                import(
-                  '../../../../ee/firebase-auth/frontend/firebase-auth.module'
-                ).then((m) => m.FirebaseAuthLayoutModule),
-            },
-          ],
-        },
-      ];
-      break;
-    case ApEdition.COMMUNITY:
-      editionRoutes = [
-        {
-          path: '',
-          component: AuthLayoutComponent,
-          children: [
-            {
-              path: '',
-              loadChildren: () =>
-                import('@activepieces/ui/feature-authentication').then(
-                  (m) => m.UiFeatureAuthenticationModule
-                ),
-            },
-          ],
-        },
-      ];
-      break;
-  }
-  return [...coreRoutes, ...editionRoutes, ...suffixRoutes];
-}
-
-function dynamicModules() {
-  return [FirebaseAuthLayoutModule];
 }
 
 function extractHostname(url: string): string {
