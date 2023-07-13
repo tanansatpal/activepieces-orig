@@ -18,25 +18,25 @@ export const DashboardLayoutRouting: Routes = [
     children: [
       { path: '', pathMatch: 'full', redirectTo: '/flows' },
       {
-        title: 'Runs - Activepieces',
+        title: 'Runs - Writer',
         path: 'runs',
         pathMatch: 'full',
         component: RunsTableComponent,
       },
       {
-        title: 'My Pieces - Activepieces',
+        title: 'My Pieces - Writer',
         path: 'settings/my-pieces',
         pathMatch: 'full',
         component: CommunityPiecesTableComponent,
       },
       {
-        title: 'Connections - Activepieces',
+        title: 'Connections - Writer',
         path: 'connections',
         pathMatch: 'full',
         component: ConnectionsTableComponent,
       },
       {
-        title: 'Flows - Activepieces',
+        title: 'Flows - Writer',
         path: 'flows',
         pathMatch: 'full',
         component: FlowsTableComponent,

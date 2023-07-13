@@ -31,13 +31,13 @@ import {
         component: AuthLayoutComponent,
         children: [
           {
-            title: 'Activepieces',
+            title: 'Writer',
             path: 'sign-in',
             component: SignInComponent,
             resolve: { firstSignIn: IsFirstSignInResolver },
           },
           {
-            title: 'Activepieces',
+            title: 'Writer',
             path: 'sign-up',
             component: SignUpComponent,
           },

@@ -130,7 +130,7 @@ function dynamicRoutes(edition: string) {
     {
       path: 'templates/:templateId',
       component: ImportFlowComponent,
-      title: 'Import Flow - Activepieces',
+      title: 'Import Flow - Writer',
     },
     {
       path: 'redirect',
@@ -139,7 +139,7 @@ function dynamicRoutes(edition: string) {
     {
       path: '**',
       component: NotFoundComponent,
-      title: '404 - Activepieces',
+      title: '404 - Writer',
     },
   ];
   let editionRoutes: Route[] = [];
