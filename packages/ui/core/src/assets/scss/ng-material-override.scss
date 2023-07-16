@@ -1,6 +1,7 @@
 @use "@angular/material" as mat;
 @use "material-theme-helper.scss";
 @import "@angular/material/theming";
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 @include mat.core();
 $ap-typography: mat.define-typography-config(
   $font-family: $font-family,
@@ -178,37 +179,37 @@ $ap-typography: mat.define-typography-config(
 .ap-typography-button {
   @include mat.typography-level($ap-typography, "button");
 }
-$ap-primary-palette: (
-  50: #eee8fc,
-  100: #d4c6f6,
-  200: #b7a0f1,
-  300: #9a7aeb,
-  400: #845ee6,
-  500: #6e41e2,
-  600: #663bdf,
-  700: #5b32da,
-  800: #512ad6,
-  900: #3f1ccf,
-  A100: #ffffff,
-  A200: #d9d1ff,
-  A400: #ae9eff,
-  A700: #9985ff,
+$ap-primary-palette:  (
+  50 : #e3ebff,
+  100 : #baceff,
+  200 : #8cadff,
+  300 : #5e8cff,
+  400 : #3c73ff,
+  500 : #195aff,
+  600 : #1652ff,
+  700 : #1248ff,
+  800 : #0e3fff,
+  900 : #082eff,
+  A100 : #ffffff,
+  A200 : #f4f5ff,
+  A400 : #c1c8ff,
+  A700 : #a7b1ff,
   contrast: (
-    50: #000000,
-    100: #000000,
-    200: #000000,
-    300: #000000,
-    400: #ffffff,
-    500: #ffffff,
-    600: #ffffff,
-    700: #ffffff,
-    800: #ffffff,
-    900: #ffffff,
-    A100: #000000,
-    A200: #000000,
-    A400: #000000,
-    A700: #000000,
-  ),
+      50 : #000000,
+      100 : #000000,
+      200 : #000000,
+      300 : #000000,
+      400 : #ffffff,
+      500 : #ffffff,
+      600 : #ffffff,
+      700 : #ffffff,
+      800 : #ffffff,
+      900 : #ffffff,
+      A100 : #000000,
+      A200 : #000000,
+      A400 : #000000,
+      A700 : #000000,
+  )
 );
 $ap-danger-palette: (
   50: #fbe7e9,
@@ -683,4 +684,8 @@ mat-icon[data-mat-icon-name="custom_expand_less"] {
 }
 .mat-mdc-dialog-content {
   max-height: 1150px !important;
+}
+
+.material-icons{
+  font-family: 'Material Icons' !important;
 }

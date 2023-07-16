@@ -31,13 +31,13 @@ import {
         component: AuthLayoutComponent,
         children: [
           {
-            title: 'Writer',
+            title: 'clarifai',
             path: 'sign-in',
             component: SignInComponent,
             resolve: { firstSignIn: IsFirstSignInResolver },
           },
           {
-            title: 'Writer',
+            title: 'clarifai',
             path: 'sign-up',
             component: SignUpComponent,
           },

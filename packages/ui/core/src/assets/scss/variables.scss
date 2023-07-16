@@ -25,10 +25,10 @@ $description: #8c8c8c;
 $bleached-gray: #a6b1bf;
 $danger: #dc3545;
 $primary-color: (
-    "default": #5551ff  ,
-    "dark": #3a36fd  ,
-    "light": #e3e3ff  ,
-    "medium": #4b48fd  ,
+    "default": #195aff  ,
+    "dark": rgb(31, 27, 247)  ,
+    "light": #dce4fa  ,
+    "medium": #3e72f8  ,
 );
 $warn-color: (
     "default": #f78a3b,
@@ -40,8 +40,8 @@ $success-color: (
     "default": #14ae5c,
     "light": #3cad71,
 );
-$font-family: "Poppins";
-$selection-color: #8965e6;
+$font-family: "'Inter', sans-serif";
+$selection-color: #baceff;
 //Colors end
 $drop-point-height: 125px;
 $drop-point-width: 300px;

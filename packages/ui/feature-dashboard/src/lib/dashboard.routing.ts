@@ -18,25 +18,25 @@ export const DashboardLayoutRouting: Routes = [
     children: [
       { path: '', pathMatch: 'full', redirectTo: '/flows' },
       {
-        title: 'Runs - Writer',
+        title: 'Runs - clarifai',
         path: 'runs',
         pathMatch: 'full',
         component: RunsTableComponent,
       },
       {
-        title: 'My Pieces - Writer',
+        title: 'My Pieces - clarifai',
         path: 'settings/my-pieces',
         pathMatch: 'full',
         component: CommunityPiecesTableComponent,
       },
       {
-        title: 'Connections - Writer',
+        title: 'Connections - clarifai',
         path: 'connections',
         pathMatch: 'full',
         component: ConnectionsTableComponent,
       },
       {
-        title: 'Flows - Writer',
+        title: 'Flows - clarifai',
         path: 'flows',
         pathMatch: 'full',
         component: FlowsTableComponent,
