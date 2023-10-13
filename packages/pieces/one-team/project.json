@@ -1,0 +1,39 @@
+{
+  "name": "pieces-one-team",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/pieces/one-team/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/pieces/one-team",
+        "tsConfig": "packages/pieces/one-team/tsconfig.lib.json",
+        "packageJson": "packages/pieces/one-team/package.json",
+        "main": "packages/pieces/one-team/src/index.ts",
+        "assets": ["packages/pieces/one-team/*.md"],
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "updateBuildableProjectDepsInPackageJson": true
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs pieces-one-team {args.ver} {args.tag}",
+      "dependsOn": [
+        "build"
+      ]
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "packages/pieces/one-team/**/*.ts"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

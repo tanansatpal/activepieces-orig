@@ -28,7 +28,7 @@ WORKDIR /usr/src/app
 RUN apt-get update && \
     apt-get install -y nginx gettext
 
-ARG ENVIRONMENT
+ARG ENVIRONMENT=standard
 
 # Copy Nginx configuration template
 COPY packages/ui/core/nginx.${ENVIRONMENT}.conf /etc/nginx/nginx.conf

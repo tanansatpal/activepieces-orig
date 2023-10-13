@@ -151,6 +151,7 @@
       "@activepieces/piece-nifty": ["packages/pieces/nifty/src/index.ts"],
       "@activepieces/piece-notion": ["packages/pieces/notion/src/index.ts"],
       "@activepieces/piece-ntfy": ["packages/pieces/ntfy/src/index.ts"],
+      "@activepieces/piece-one-team": ["packages/pieces/one-team/src/index.ts"],
       "@activepieces/piece-onfleet": ["packages/pieces/onfleet/src/index.ts"],
       "@activepieces/piece-open-router": [
         "packages/pieces/open-router/src/index.ts"
