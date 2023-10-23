@@ -145,6 +145,9 @@
         "packages/pieces/mattermost/src/index.ts"
       ],
       "@activepieces/piece-mautic": ["packages/pieces/mautic/src/index.ts"],
+      "@activepieces/piece-microsoft-excel-365": [
+        "packages/pieces/microsoft-excel-365/src/index.ts"
+      ],
       "@activepieces/piece-microsoft-onedrive": [
         "packages/pieces/microsoft-onedrive/src/index.ts"
       ],
@@ -169,6 +172,9 @@
       "@activepieces/piece-posthog": ["packages/pieces/posthog/src/index.ts"],
       "@activepieces/piece-pushover": ["packages/pieces/pushover/src/index.ts"],
       "@activepieces/piece-qdrant": ["packages/pieces/qdrant/src/index.ts"],
+      "@activepieces/piece-read-file": [
+        "packages/pieces/read-file/src/index.ts"
+      ],
       "@activepieces/piece-rss": ["packages/pieces/rss/src/index.ts"],
       "@activepieces/piece-salesforce": [
         "packages/pieces/salesforce/src/index.ts"
@@ -237,6 +243,9 @@
       ],
       "@activepieces/pieces/google-my-business": [
         "packages/pieces/google-my-business/src/index.ts"
+      ],
+      "@activepieces/pieces/math-helper": [
+        "packages/pieces/math-helper/src/index.ts"
       ],
       "@activepieces/pieces/text-helper": [
         "packages/pieces/text-helper/src/index.ts"

@@ -46,7 +46,7 @@ import { AddPieceTypeAndPackageTypeToPieceMetadata1695992551156 } from './migrat
 import { AddPieceTypeAndPackageTypeToFlowVersion1696245170061 } from './migration/common/1696245170061-add-piece-type-and-package-type-to-flow-version'
 import { AddPieceTypeAndPackageTypeToFlowTemplate1696245170062 } from './migration/common/1696245170062-add-piece-type-and-package-type-to-flow-template'
 import { AddVisibilityStatusToChatbot1695719749099 } from './migration/postgres/1695719749099-AddVisibilityStatusToChatbot'
-import { ApEdition } from '@activepieces/shared'
+import { ApEdition, ApEnvironment } from '@activepieces/shared'
 import { getEdition } from '../helper/secret-helper'
 import { AddDatasourcesLimit1695916063833 } from '../ee/database/migrations/postgres/1695916063833-AddDatasourcesLimit'
 import { MakeStripeSubscriptionNullable1685053959806 } from '../ee/database/migrations/postgres/1685053959806-MakeStripeSubscriptionNullable'
@@ -66,6 +66,9 @@ import { AddPinnedOrder1686154285890 } from '../ee/database/migrations/postgres/
 import { AddPinnedAndBlogUrlToTemplates1686133672743 } from '../ee/database/migrations/postgres/1686133672743-AddPinnedAndBlogUrlToTemplates'
 import { ChangeToJsonToKeepKeysOrder1685991260335 } from '../ee/database/migrations/postgres/1685991260335-ChangeToJsonToPeserveKeys'
 import { AddArchiveIdToPieceMetadata1696950789636 } from './migration/postgres/1696950789636-add-archive-id-to-piece-metadata'
+import { AddPlatform1697717995884 } from '../ee/database/migrations/postgres/1697717995884-add-platform'
+import { StoreCodeInsideFlow1697969398200 } from './migration/common/1697969398200-store-code-inside-flow'
+import { AddPlatformToProject1698065083750 } from './migration/postgres/1698065083750-add-platform-to-project'
 
 const getSslConfig = (): boolean | TlsOptions => {
     const useSsl = system.get(SystemProp.POSTGRES_USE_SSL)
@@ -123,6 +126,8 @@ const getMigrations = (): (new () => MigrationInterface)[] => {
         AddPieceTypeAndPackageTypeToPieceMetadata1695992551156,
         AddPieceTypeAndPackageTypeToFlowVersion1696245170061,
         AddArchiveIdToPieceMetadata1696950789636,
+        StoreCodeInsideFlow1697969398200,
+        AddPlatformToProject1698065083750,
     ]
 
     const edition = getEdition()
@@ -147,12 +152,14 @@ const getMigrations = (): (new () => MigrationInterface)[] => {
                 ModifyBilling1694902537045,
                 AddDatasourcesLimit1695916063833,
                 AddPieceTypeAndPackageTypeToFlowTemplate1696245170062,
+                AddPlatform1697717995884,
             )
             break
         case ApEdition.ENTERPRISE:
             commonMigration.push(
                 AddProjectMembers1689177797092,
                 ProjectMemberRelations1694381968985,
+                AddPlatform1697717995884,
             )
             break
         case ApEdition.COMMUNITY:
@@ -160,6 +167,20 @@ const getMigrations = (): (new () => MigrationInterface)[] => {
     }
 
     return commonMigration
+}
+
+const getMigrationConfig = (): MigrationConfig => {
+    const env = system.getOrThrow<ApEnvironment>(SystemProp.ENVIRONMENT)
+
+    if (env === ApEnvironment.TESTING) {
+        return {}
+    }
+
+    return {
+        migrationsRun: true,
+        migrationsTransactionMode: 'each',
+        migrations: getMigrations(),
+    }
 }
 
 export const createPostgresDataSource = (): DataSource => {
@@ -170,6 +191,7 @@ export const createPostgresDataSource = (): DataSource => {
     const serializedPort = system.getOrThrow(SystemProp.POSTGRES_PORT)
     const port = Number.parseInt(serializedPort, 10)
     const username = system.getOrThrow(SystemProp.POSTGRES_USERNAME)
+    const migrationConfig = getMigrationConfig()
 
     return new DataSource({
         type: 'postgres',
@@ -178,10 +200,14 @@ export const createPostgresDataSource = (): DataSource => {
         username,
         password,
         database,
-        migrationsRun: true,
-        migrationsTransactionMode: 'each',
         ssl: getSslConfig(),
-        migrations: getMigrations(),
+        ...migrationConfig,
         ...commonProperties,
     })
+}
+
+type MigrationConfig = {
+    migrationsRun?: boolean
+    migrationsTransactionMode?: 'all' | 'none' | 'each'
+    migrations?: (new () => MigrationInterface)[]
 }
