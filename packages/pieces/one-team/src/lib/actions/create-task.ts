@@ -10,6 +10,9 @@ export const createTask = createAction({
     description: 'Create task on 1team',
     props: {
         workspace_id: oneTeamCommon.workspace_id,
+        thing_type: oneTeamCommon.thing_type,
+        thing_id: oneTeamCommon.thing_id,
+        owner: oneTeamCommon.owner,
         summary: Property.ShortText({
             displayName: 'Task summary',
             description: undefined,
@@ -17,16 +20,6 @@ export const createTask = createAction({
         }),
         priority: Property.ShortText({
             displayName: 'Priority',
-            description: undefined,
-            required: true,
-        }),
-        thingId: Property.ShortText({
-            displayName: 'Thing Id',
-            description: undefined,
-            required: true,
-        }),
-        owner: Property.ShortText({
-            displayName: 'Owner',
             description: undefined,
             required: true,
         }),
@@ -52,7 +45,7 @@ export const createTask = createAction({
                 "_id": null,
                 "name": context.propsValue['summary'],
                 "description": "",
-                "thingId": context.propsValue['thingId'],
+                "thingId": context.propsValue['thing_id'],
                 "performer": context.propsValue['owner'],
                 "performers": [],
                 "dueDateTime": dueDateObject,

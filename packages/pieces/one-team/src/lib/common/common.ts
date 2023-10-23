@@ -135,6 +135,211 @@ export const oneTeamCommon: any = {
             }
         }
     }),
+    thing_type: Property.Dropdown({
+        refreshers: ['workspace_id'],
+        displayName: 'Thing Type',
+        description: undefined,
+        required: true,
+        options: async ({auth, workspace_id}) => {
+            if (!auth) {
+                return {
+                    disabled: true,
+                    options: [],
+                    placeholder: "Please connect your account"
+                }
+            }
+            if (!workspace_id) {
+                return {
+                    disabled: true,
+                    options: [],
+                    placeholder: "Please select a workspace"
+                }
+            }
+            const excludeThingTypes = ['boards', 'todo', 'bookmark', 'mom'];
+            const authProp: OAuth2PropertyValue = auth as OAuth2PropertyValue;
+            const workspaceData = workspace_id as any;
+            const orgData = (await httpClient.sendRequest<{ 'thing-types': any }>({
+                method: HttpMethod.GET,
+                url: `https://dev.1team.ai/1team-assets/org-assets/${workspaceData.organisationId}/web/org-web.json`,
+                authentication: {
+                    type: AuthenticationType.BEARER_TOKEN,
+                    token: authProp.access_token
+                },
+                body: {}
+            })).body;
+            const thingTypes = orgData['thing-types']
+            return {
+                disabled: false,
+                options: thingTypes.filter((t: any) => !excludeThingTypes.includes(t.category)).map((thing: any) => {
+                    return {
+                        label: thing.value,
+                        value: thing.key
+                    }
+                })
+            }
+        }
+    }),
+    thing_id: Property.Dropdown({
+        refreshers: ['thing_type'],
+        displayName: 'Thing',
+        description: undefined,
+        required: true,
+        options: async ({auth, thing_type, workspace_id}) => {
+            if (!auth) {
+                return {
+                    disabled: true,
+                    options: [],
+                    placeholder: "Please connect your account"
+                }
+            }
+            if (!workspace_id) {
+                return {
+                    disabled: true,
+                    options: [],
+                    placeholder: "Please select a workspace"
+                }
+            }
+            if (!thing_type) {
+                return {
+                    disabled: true,
+                    options: [],
+                    placeholder: "Please select a thing type"
+                }
+            }
+            const authProp: OAuth2PropertyValue = auth as OAuth2PropertyValue;
+            const workspaceData = workspace_id as any;
+            const things = (await httpClient.sendRequest<{ data: { name: string, _id: string }[] }>({
+                method: HttpMethod.POST,
+                url: `${oneTeamCommon.baseUrl}/wot/module/search`,
+                headers: {
+                    'Wot-Workspace-Id': workspaceData.workspaceId,
+                    'Wot-User-Id': workspaceData.wotUserId,
+                    'Userid': workspaceData.userId,
+                    'Organizationid': workspaceData.organisationId,
+                    'Iamuserid': workspaceData.iamUserId,
+                    Clientid: '634e809a1ac94f41fc07a832',
+                    Apikey: 'b2w16qhe0p',
+                },
+                authentication: {
+                    type: AuthenticationType.BEARER_TOKEN,
+                    token: authProp['access_token'],
+                },
+                body: {
+                    filter: {
+                        "funct": {
+                            "name": "and",
+                            "args": [
+                                {
+                                    "funct": {
+                                        "name": "equal",
+                                        "args": [
+                                            {
+                                                "name": "status",
+                                                "type": "Field"
+                                            },
+                                            {
+                                                "name": "active",
+                                                "type": "Constant"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "funct": {
+                                        "name": "equal",
+                                        "args": [
+                                            {
+                                                "name": "type.key",
+                                                "type": "Field"
+                                            },
+                                            {
+                                                "name": thing_type,
+                                                "type": "Constant"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    module: 'THING'
+                }
+            })).body.data;
+
+            return {
+                disabled: false,
+                options: things.map((thing: any) => {
+                    return {
+                        label: thing.name,
+                        value: thing._id
+                    }
+                })
+            }
+        }
+    }),
+    owner: Property.Dropdown({
+        refreshers: ['workspace_id'],
+        displayName: 'Owner',
+        description: undefined,
+        required: true,
+        options: async ({auth, workspace_id}) => {
+            if (!auth) {
+                return {
+                    disabled: true,
+                    options: [],
+                    placeholder: "Please connect your account"
+                }
+            }
+            if (!workspace_id) {
+                return {
+                    disabled: true,
+                    options: [],
+                    placeholder: "Please select a workspace"
+                }
+            }
+            const authProp: OAuth2PropertyValue = auth as OAuth2PropertyValue;
+            const workspaceData = workspace_id as any;
+            const users = (await httpClient.sendRequest<{ data: { name: string, wot_userId: string }[] }>({
+                method: HttpMethod.POST,
+                url: `${oneTeamCommon.baseUrl}/wot/module/search`,
+                headers: {
+                    'Wot-Workspace-Id': workspaceData.workspaceId,
+                    'Wot-User-Id': workspaceData.wotUserId,
+                    'Userid': workspaceData.userId,
+                    'Organizationid': workspaceData.organisationId,
+                    'Iamuserid': workspaceData.iamUserId,
+                    Clientid: '634e809a1ac94f41fc07a832',
+                    Apikey: 'b2w16qhe0p',
+                },
+                authentication: {
+                    type: AuthenticationType.BEARER_TOKEN,
+                    token: authProp['access_token'],
+                },
+                body: {
+                    "filter": {
+                        "funct": {
+                            "name": "and", "args": [{
+                                "funct": {
+                                    "name": "equal", "args": [{"name": "status", "type": "Field"}, {
+                                        "name": "active", "type": "Constant"
+                                    }]
+                                }
+                            }]
+                        }
+                    },"module": "USER"
+                }
+            })).body.data;
+            return {
+                disabled: false,
+                options: users.map((user: any) => {
+                    return {
+                        label: user.name,
+                        value: user._id
+                    }
+                })
+            }
+        }
+    }),
     getPriorityObject(priority: string) {
         const priorities = [
             {
