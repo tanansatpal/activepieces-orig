@@ -180,7 +180,7 @@ export const oneTeamCommon: any = {
         }
     }),
     thing_id: Property.Dropdown({
-        refreshers: ['thing_type'],
+        refreshers: ['workspace_id','thing_type'],
         displayName: 'Thing',
         description: undefined,
         required: true,
@@ -190,13 +190,6 @@ export const oneTeamCommon: any = {
                     disabled: true,
                     options: [],
                     placeholder: "Please connect your account"
-                }
-            }
-            if (!workspace_id) {
-                return {
-                    disabled: true,
-                    options: [],
-                    placeholder: "Please select a workspace"
                 }
             }
             if (!thing_type) {
@@ -375,7 +368,7 @@ export const oneTeamCommon: any = {
                 "displayOrder": 4
             }
         ]
-        return priorities.find(p => p.value === priority);
+        return priorities.find(p => p.value.toLowerCase() === priority.toLowerCase());
     },
     async getUsers(auth: OAuth2PropertyValue): Promise<{ iamUser: IAMUser, user: any }> {
         const keycloakUser: KeycloakProfile = (await httpClient.sendRequest<KeycloakProfile>({
