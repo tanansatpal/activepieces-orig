@@ -56,6 +56,8 @@ import { getEdition } from './helper/secret-helper'
 import { pieceServiceHooks } from './pieces/piece-service/piece-service-hooks'
 import { projectModule } from './project/project-module'
 import { flowWorkerHooks } from './workers/flow-worker/flow-worker-hooks'
+import { customDomainModule } from './ee/custom-domains/custom-domain.module'
+import { setupBullMQBoard } from './workers/flow-worker/queues/redis/redis-queue'
 
 export const setupApp = async (): Promise<FastifyInstance> => {
     const app = fastify({
@@ -151,6 +153,8 @@ export const setupApp = async (): Promise<FastifyInstance> => {
     await app.register(chatbotModule)
     await app.register(userModule)
 
+    await setupBullMQBoard(app)
+
     app.get(
         '/redirect',
         async (
@@ -186,6 +190,7 @@ export const setupApp = async (): Promise<FastifyInstance> => {
             await app.register(referralModule)
             await app.register(adminPieceModule)
             await app.register(platformModule)
+            await app.register(customDomainModule)
             chatbotHooks.setHooks(cloudChatbotHooks)
             datasourceHooks.setHooks(cloudDatasourceHooks)
             embeddings.set(qdrantEmbeddings)
@@ -200,6 +205,7 @@ export const setupApp = async (): Promise<FastifyInstance> => {
             await app.register(enterpriseProjectModule)
             await app.register(projectMemberModule)
             await app.register(platformModule)
+            await app.register(customDomainModule)
             pieceServiceHooks.set(cloudPieceServiceHooks)
             break
         case ApEdition.COMMUNITY:
